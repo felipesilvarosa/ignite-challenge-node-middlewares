@@ -22,7 +22,14 @@ function checksExistsUserAccount(request, response, next) {
   return response.status(404).json({ error: "User does not exists" });
 }
 
-function checksCreateTodosUserAvailability(request, response, next) {}
+function checksCreateTodosUserAvailability(request, response, next) {
+  const user = request.user;
+  const { pro, todos } = user;
+
+  if ((!pro && todos.length <= 10) || pro) {
+    return next();
+  }
+}
 
 function checksTodoExists(request, response, next) {
   // Complete aqui

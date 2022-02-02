@@ -26,27 +26,46 @@ function checksCreateTodosUserAvailability(request, response, next) {
   const user = request.user;
   const { pro, todos } = user;
 
-  if ((!pro && todos.length <= 10) || pro) {
+  if ((!pro && todos.length < 10) || pro) {
     return next();
   }
+
+  return response
+    .status(403)
+    .json({ error: "User has reached the limit of todos" });
 }
 
 function checksTodoExists(request, response, next) {
   const usernameToFind = request.headers.username;
   const todoId = request.params.id;
 
-  const userExists = users.find((user) => user.username === usernameToFind);
-  const todo = userExists.todos.find((todo) => todo.id === todoId);
+  if (validate(todoId)) {
+    const userExists = users.find((user) => user.username === usernameToFind);
 
-  if (todo) {
-    request.user = userExists;
-    request.todo = todo;
-    return next();
+    if (userExists) {
+      const todo = userExists.todos.find((todo) => todo.id === todoId);
+
+      if (todo) {
+        request.user = userExists;
+        request.todo = todo;
+        return next();
+      }
+      return response.status(404).json({ error: "Todo does not exists" });
+    }
+    return response.status(404).json({ error: "User does not exists" });
   }
+  return response.status(400).json({ error: "Invalid todo id" });
 }
 
 function findUserById(request, response, next) {
-  // Complete aqui
+  const userId = request.params.id;
+  const userFound = users.find((user) => user.id === userId);
+  if (userFound) {
+    request.user = userFound;
+    return next();
+  }
+
+  return response.status(404).json({ error: "User does not exists" });
 }
 
 app.post("/users", (request, response) => {

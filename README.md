@@ -1,4 +1,9 @@
-## Challenge 02 - Middleware - Node.js - Ignite - Rocketseat
+# Challenge 02 - Middleware - Node.js - Ignite - Rocketseat
+
+## Description
+
+Repository for the [Ignite](https://lp.rocketseat.com.br/ignite) course challenge.
+
 
 ### Requirements:
 
